@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class AnnuaireImpl extends UnicastRemoteObject implements Annuaire {
 
-    private Map<String, List<String>> fichiers; // { nameSource:port , listes des filmes}
+    private Map<String, List<String>> fichiers; // { nameSource:port , listes des films}
 
     public AnnuaireImpl() throws RemoteException {
         super();

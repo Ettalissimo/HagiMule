@@ -1,5 +1,6 @@
 package Client;
 
+import java.io.File;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -10,25 +11,32 @@ import Annuaire.Annuaire;
 public class Client {
     private String id;
     private List<String> fichiersPossedes;
-
     private Daemon daemon;
     private Downloader downloader;
-    private String film;
+    private String[] mesFilms; 
 
     public Client(String id, int portDaemon) {
         this.id = id +":"+ portDaemon;
         this.fichiersPossedes = new ArrayList<>();
         this.daemon = new Daemon(portDaemon);
         this.downloader = new Downloader();
+        // Automatiser les noms des films  
+        this.mesFilms = new String[100];
+        File filmDir = new File("./MesFilms");
+        File[] files = filmDir.listFiles();
+        int i = 0;
+        if (files != null) {
+            for (File file : files) {
+                if (file.isFile()) {
+                    System.out.println(file.getName());
+                    this.mesFilms[i] = file.getName();
+                    i++;
+                }
+            }
+        }
     }
 
-    public Client(String id, int portDaemon, String film) {
-        this.id = id +":"+ portDaemon;
-        this.fichiersPossedes = new ArrayList<>();
-        this.daemon = new Daemon(portDaemon);
-        this.downloader = new Downloader();
-        this.film = film;
-    }
+
 
 
     public void lancerDaemon() {
@@ -56,7 +64,7 @@ public class Client {
 
             // on peut implemanter un code qui optimise ce nombre de fragments 
             // proposition simple : nbr fragment == nbr sources disponibles 
-            int totalFragments = 2;
+            int totalFragments = sources.size();
             downloader.demarrerTelechargement(fichier, sources, totalFragments);
         } catch (RemoteException e) {
             System.err.println("Erreur lors de la recherche ou du téléchargement : " + e.getMessage());
@@ -78,29 +86,24 @@ public class Client {
 
         String clientId = args[0];
         int daemonPort = Integer.parseInt(args[1]);
-        String choix = args[2];
+        String choix = args[2]; // deamon == 0 & downloader == 1
         
 
 
         try {
             Annuaire annuaire = (Annuaire) Naming.lookup("//localhost:9008/Annuaire");
+            Client client = new Client(clientId, daemonPort);
 
             if (choix.equals("0")) {
-                Client client = new Client(clientId, daemonPort);
-                //client.ajouterFichier("file1.txt");
-                //client.ajouterFichier("file2.txt");
-                client.ajouterFichier("film.bits");
-
+                for (String film : client.mesFilms){
+                    client.ajouterFichier(film);
+                }
                 client.mettreAJourFichiers(annuaire);
+                
                 new Thread(client::lancerDaemon).start();
                 
             } else {
                 String film = args[3];
-                Client client = new Client(clientId, daemonPort, film);
-                //client.ajouterFichier("file3.txt");
-                //client.ajouterFichier("file4.txt");
-                //client.mettreAJourFichiers(annuaire);
-
                 client.telechargerFichier(film, annuaire);
             }
             
@@ -115,7 +118,7 @@ public class Client {
 
     /*
      * cd src
-       javac annuaire/*.java client/*.java
+       javac Annuaire/*.java Client/*.java
 
        rm Annuaire/*.class Client/*.class
 
