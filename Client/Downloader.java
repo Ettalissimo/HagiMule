@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.List;
@@ -40,7 +39,7 @@ public class Downloader {
                 e.printStackTrace();
             }
         }
-        System.out.println("wach kat assembler");
+        // System.out.println("wach kat assembler");
         assemblerFichier(fichier, totalFragments);
 
     }
@@ -75,22 +74,9 @@ public class Downloader {
                 while (totalBytesRead < fragmentSize    && (bytesRead = input.read(buffer)) != -1 ) {
                     fos.write(buffer, 0, (fragmentSize - totalBytesRead>bufferSize)?bytesRead:(int)(fragmentSize-totalBytesRead));
                     totalBytesRead += bytesRead;
-                    System.out.println("total bytesread: "+ totalBytesRead);
+                    // System.out.println("total bytesread: "+ totalBytesRead);
                 }
-                System.out.println("wach katkhrj mnha ");
-
-                //fragments[fragmentId] = new byte[bufferSize];
-                //System.arraycopy(buffer, 0, fragments[fragmentId], 0, bufferSize);
-
-
-                //while ((bytesRead = input.read(buffer)) !=  )
-
-                /*if (bytesRead > 0) {
-                    fragments[fragmentId] = new byte[bytesRead];
-                    System.arraycopy(buffer, 0, fragments[fragmentId], 0, bytesRead);
-                    System.out.println("Fragment " + fragmentId + " reçu de " + source);
-                }*/
-                // System.out.println("Fragment recu de " + source + " : " + new String(buffer, 0, bytesRead));
+                // System.out.println("wach katkhrj mnha ");
             }
         } catch (Exception e) {
             System.err.println("Erreur lors du telechargement du fragment " + fragmentId +" depuis " + source + " : " + e.getMessage());
@@ -107,11 +93,11 @@ public class Downloader {
 
             for (int fragmentId = 0; fragmentId < totalFragments; fragmentId++){
                 fis = new FileInputStream(TmpFiles_DIR +"Tmp_" + fragmentId + "_" + fichier);
-                System.out.println("test test ");
+                // System.out.println("test test ");
                 while (((bytesRead = fis.read(buffer)) != -1 ) ) {
                     fos.write(buffer, 0, bytesRead);
                 }
-                System.out.println("after after ");
+                // System.out.println("after after ");
             }
 
 

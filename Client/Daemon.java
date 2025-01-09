@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -75,8 +74,6 @@ public class Daemon {
                 System.out.println("fILE SIZE "+fragmentSize);
                 int bytesSent = 0;
 
-                // = -1 ou byte > fragmentSize
-
                 while ( (bytesSent < fragmentSize) && ((bytesRead = fis.read(buffer)) != -1 )  ) {
                     dos.write(buffer, 0, (fragmentSize - bytesSent > bufferMax)?bytesRead:(fragmentSize - bytesSent));
                     bytesSent += bytesRead;
@@ -84,20 +81,6 @@ public class Daemon {
 
                  
                 System.out.println("Fragment " + fragmentId + " envoyé.");
-                /*
-                byte[] buffer = new byte[4096];
-                int bytesRead;
-                while ((bytesRead = fis.read(buffer)) != -1) {
-                    dos.write(buffer, 0, bytesRead);
-                
-
-
-                if (bytesRead > 0) {
-                    output.write(buffer, 0, bytesRead);
-                    System.out.println("Fragment " + fragmentId + " envoyé.");
-                } else  {
-                    System.out.println("Fragment " + fragmentId + " non disponible (hors limites).");
-                }*/
             
 
         } catch (Exception e) {
